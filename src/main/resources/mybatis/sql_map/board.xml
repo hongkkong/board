@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding= "UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="board">
+	<select id="searchData" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		<![CDATA[
+		 /**board.searchList**/
+		SELECT SEQ
+			   ,BOARD_TYPE_CD
+			   ,MENU_CD
+			   ,TITLE
+			   ,CASE WHEN LENGTH(replace(CONTENT_DESC,'<br/>',''))>150 THEN CONCAT(SUBSTRING(replace(CONTENT_DESC,'<br/>',''),1,150),'..') ELSE replace(CONTENT_DESC,'<br/>','') END CONTENT_DESC
+			   ,FIXED_YN
+			   ,LIKE_YN
+			   ,CREATE_ID
+			   ,CREATE_DATETIME
+			   ,UPDATE_ID
+			   ,CASE WHEN CREATE_ID in('SYSTEM','hongkkong') THEN DATE_FORMAT(UPDATE_DATETIME,'%Y-%m-%d') else DATE_FORMAT(UPDATE_DATETIME,'%Y-%m-%d %H:%i:%s') END UPDATE_DATETIME
+			   ,COMMENT_YN
+			   ,HIDDEN_YN
+			   ,CREATE_DATE
+			   ,(SELECT COUNT(*) FROM TN_OPR_BOARD_CNT_ITEMS B WHERE 1=1 AND B.MENU_CD =A.MENU_CD AND B.BOARD_SEQ=A.SEQ) CLICK_CNT
+			   ,USER_NM
+			   ,IFNULL((SELECT COUNT(*) 
+			       FROM TN_OPR_BOARD_COMMENT_INFO CM 
+			      WHERE 1=1 
+			        AND HIDDEN_YN='N' 
+			        AND CM.BOARD_SEQ =A.SEQ 
+			      GROUP BY BOARD_SEQ),0) COMMENTS_CNT
+	     FROM TN_OPR_BOARD_INFO A
+	    WHERE 1=1 
+	      AND HIDDEN_YN ='N'
+	     ]]>
+	    
+	    <if test="TITLE != null and TITLE != ''">
+	      AND TITLE like concat('%',#{TITLE},'%')
+	    </if> 
+	    
+	    <if test="CONTENT_DESC != null and CONTENT_DESC != ''">
+	      AND CONTENT_DESC like concat('%',#{CONTENT_DESC},'%')
+	    </if>
+	     
+    	<if test="COMMENT_YN != null and COMMENT_YN != ''">
+	      AND COMMENT_YN like concat('%',#{COMMENT_YN},'%')
+	    </if>
+	     
+	    <if test="USER_NM != null and USER_NM != ''">
+	      AND USER_NM like concat('%',#{USER_NM},'%')
+	    </if>
+	    
+	    <if test="MENU_CD != null and MENU_CD != ''">
+	      AND MENU_CD =#{MENU_CD} 
+	    </if>   
+	      ORDER BY CREATE_DATE DESC, CREATE_DATETIME DESC
+	      LIMIT ${START_NUM},${LIMIT_NUM}
+	</select>
+	
+	<select id="searchDataTotal" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		 <![CDATA[
+		 /**board.searchTotal**/
+		SELECT COUNT(*)TOTAL_CNT
+	     FROM TN_OPR_BOARD_INFO A
+	    WHERE 1=1 
+	    ]]>
+	    
+	    <if test="TITLE != null and TITLE != ''">
+	      AND TITLE like concat('%',#{TITLE},'%')
+	    </if> 
+	    
+	    <if test="CONTENT_DESC != null and CONTENT_DESC != ''">
+	      AND CONTENT_DESC like concat('%',#{CONTENT_DESC},'%')
+	    </if>
+	     
+    	<if test="COMMENT_YN != null and COMMENT_YN != ''">
+	      AND COMMENT_YN like concat('%',#{COMMENT_YN},'%')
+	    </if>
+	     
+	    <if test="USER_NM != null and USER_NM != ''">
+	      AND USER_NM like concat('%',#{COMMENT_YN},'%')
+	    </if>
+	    
+	    <if test="MENU_CD != null and MENU_CD != ''">
+	      AND MENU_CD =#{MENU_CD} 
+	    </if>
+	      AND HIDDEN_YN ='N'
+	</select>
+	
+	<select id="mainList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		 <![CDATA[
+		 /**board.mainList**/
+		SELECT SEQ
+			   ,BOARD_TYPE_CD
+			   ,MENU_CD
+			   ,TITLE
+			   ,CASE WHEN LENGTH(replace(CONTENT_DESC,'<br/>',''))>150 THEN CONCAT(SUBSTRING(replace(CONTENT_DESC,'<br/>',''),1,150),'..') ELSE replace(CONTENT_DESC,'<br/>','') END CONTENT_DESC
+			   ,FIXED_YN
+			   ,LIKE_YN
+			   ,CREATE_ID
+			   ,CREATE_DATETIME
+			   ,UPDATE_ID
+			   ,CASE WHEN CREATE_ID in('SYSTEM','hongkkong') THEN DATE_FORMAT(UPDATE_DATETIME,'%Y-%m-%d') else DATE_FORMAT(UPDATE_DATETIME,'%Y-%m-%d %H:%i:%s') END UPDATE_DATETIME
+			   ,COMMENT_YN
+			   ,HIDDEN_YN
+			   ,CREATE_DATE
+			   ,(SELECT COUNT(*) FROM TN_OPR_BOARD_CNT_ITEMS B WHERE 1=1 AND B.MENU_CD =A.MENU_CD AND B.BOARD_SEQ=A.SEQ) CLICK_CNT
+			   ,USER_NM
+			   ,IFNULL((SELECT COUNT(*) 
+			       FROM TN_OPR_BOARD_COMMENT_INFO CM 
+			      WHERE 1=1 
+			        AND HIDDEN_YN='N' 
+			        AND CM.BOARD_SEQ =A.SEQ 
+			      GROUP BY BOARD_SEQ),0) COMMENTS_CNT
+	     FROM TN_OPR_BOARD_INFO A
+	    WHERE 1=1 
+	      AND MENU_CD =#{MENU_CD} 
+	      AND HIDDEN_YN ='N'
+	      ORDER BY CREATE_DATE DESC, CREATE_DATETIME DESC
+	      LIMIT ${START_NUM},${LIMIT_NUM}
+		 ]]>
+	</select>
+
+	<select id="articleTotal" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		 <![CDATA[
+		 /**board.articleTotal**/
+		SELECT COUNT(*)TOTAL_CNT
+	     FROM TN_OPR_BOARD_INFO A
+	    WHERE 1=1 
+	    ]]>
+	    <if test="MENU_CD != null and MENU_CD != ''">
+	      AND MENU_CD =#{MENU_CD} 
+	    </if>
+	      <if test="QUERY_STRING != null and QUERY_STRING != ''">
+	      AND TITLE like concat('%',#{QUERY_STRING},'%')
+	      </if>
+	      AND HIDDEN_YN ='N'
+	</select>
+	
+	<select id="commentsTotal" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		 <![CDATA[
+		 /**board.commentsTotal**/
+		SELECT COUNT(*)TOTAL_CNT
+	     FROM TN_OPR_BOARD_COMMENT_INFO A
+	    WHERE 1=1 
+	      AND BOARD_SEQ =#{BOARD_SEQ} 
+	      AND HIDDEN_YN ='N'
+	       ]]>
+	</select>
+	
+	<select id="articleList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		 <![CDATA[
+		 /**board.articleList**/
+		SELECT SEQ
+			   ,BOARD_TYPE_CD
+			   ,MENU_CD
+			   ,TITLE
+			   ,CASE WHEN LENGTH(replace(CONTENT_DESC,'<br/>',''))>150 THEN CONCAT(SUBSTRING(replace(CONTENT_DESC,'<br/>',''),1,150),'..') ELSE replace(CONTENT_DESC,'<br/>','') END CONTENT_DESC
+			   ,FIXED_YN
+			   ,LIKE_YN
+			   ,CREATE_ID
+			   ,CREATE_DATETIME
+			   ,UPDATE_ID
+			   ,CASE WHEN CREATE_ID in('SYSTEM','hongkkong') THEN DATE_FORMAT(UPDATE_DATETIME,'%Y-%m-%d') else DATE_FORMAT(UPDATE_DATETIME,'%Y-%m-%d %H:%i:%s') END UPDATE_DATETIME
+			   ,COMMENT_YN
+			   ,HIDDEN_YN
+			   ,CREATE_DATE
+			   ,(SELECT COUNT(*) FROM TN_OPR_BOARD_CNT_ITEMS B WHERE 1=1 AND B.MENU_CD =A.MENU_CD AND B.BOARD_SEQ=A.SEQ) CLICK_CNT
+			   ,USER_NM
+			   ,IFNULL((SELECT COUNT(*) 
+			       FROM TN_OPR_BOARD_COMMENT_INFO CM 
+			      WHERE 1=1 
+			        AND HIDDEN_YN='N' 
+			        AND CM.BOARD_SEQ =A.SEQ 
+			      GROUP BY BOARD_SEQ),0) COMMENTS_CNT
+			    ,${PAGE_NUM} PAGE_NUM
+	     FROM TN_OPR_BOARD_INFO A
+	    WHERE 1=1 
+	      AND HIDDEN_YN ='N'
+	       ]]>
+	    <if test="MENU_CD != null and MENU_CD != ''">
+	      AND MENU_CD =#{MENU_CD} 
+	    </if>
+	       <if test="QUERY_STRING != null and QUERY_STRING != ''">
+	      AND TITLE LIKE CONCAT('%',#{QUERY_STRING},'%')
+	      </if>
+	       ORDER BY CREATE_DATE DESC, CREATE_DATETIME DESC
+	      LIMIT ${START_NUM},${LIMIT_NUM}
+	</select>
+	
+	<select id="aticleTopData" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		 <![CDATA[
+		 /**board.aticleTopData**/
+		SELECT SEQ
+			   ,BOARD_TYPE_CD
+			   ,MENU_CD
+			   ,(CASE WHEN LENGTH(TITLE) >30 THEN CONCAT(SUBSTR(TITLE,1,30),'..') ELSE TITLE END) TITLE
+			   ,CASE WHEN LENGTH(replace(CONTENT_DESC,'<br/>',''))>150 THEN CONCAT(SUBSTRING(replace(CONTENT_DESC,'<br/>',''),1,150),'..') ELSE replace(CONTENT_DESC,'<br/>','') END CONTENT_DESC
+			   ,FIXED_YN
+			   ,LIKE_YN
+			   ,CREATE_ID
+			   ,CREATE_DATETIME
+			   ,UPDATE_ID
+			   ,CASE WHEN CREATE_ID in('SYSTEM','hongkkong') THEN DATE_FORMAT(UPDATE_DATETIME,'%Y-%m-%d') else DATE_FORMAT(UPDATE_DATETIME,'%Y-%m-%d %H:%i:%s') END UPDATE_DATETIME
+			   ,COMMENT_YN
+			   ,HIDDEN_YN
+			   ,CREATE_DATE
+			   ,(SELECT COUNT(*) FROM TN_OPR_BOARD_CNT_ITEMS B WHERE 1=1 AND B.MENU_CD =A.MENU_CD AND B.BOARD_SEQ=A.SEQ) CLICK_CNT
+			   ,USER_NM
+	      FROM TN_OPR_BOARD_INFO A
+	     WHERE 1=1 
+	       ]]>
+	       AND MENU_CD =#{MENU_CD} 
+	       AND HIDDEN_YN ='N'
+	       AND CREATE_DATE LIKE CONCAT('%',DATE_FORMAT(NOW(),'%Y%m'),'%') 
+	       ORDER BY CLICK_CNT DESC ,CREATE_DATETIME DESC
+	      LIMIT ${START_NUM},${LIMIT_NUM}
+	</select>
+	
+	<select id="listViewData" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		 <![CDATA[
+		 /**board.listViewData**/
+		SELECT SEQ
+			   ,BOARD_TYPE_CD
+			   ,MENU_CD
+			   ,TITLE
+			   ,CONTENT_DESC
+			   ,FIXED_YN
+			   ,LIKE_YN
+			   ,CREATE_ID
+			   ,CREATE_DATETIME
+			   ,UPDATE_ID
+			   ,CASE WHEN CREATE_ID in('SYSTEM','hongkkong') THEN DATE_FORMAT(UPDATE_DATETIME,'%Y-%m-%d') else DATE_FORMAT(UPDATE_DATETIME,'%Y-%m-%d %H:%i:%s') END UPDATE_DATETIME
+			   ,COMMENT_YN
+			   ,HIDDEN_YN
+			   ,CREATE_DATE
+			   ,(SELECT COUNT(*) FROM TN_OPR_BOARD_CNT_ITEMS B WHERE 1=1 AND B.BOARD_SEQ=A.SEQ AND B.MENU_CD=A.MENU_CD) CLICK_CNT
+			   ,USER_NM
+			   ,CRAWLER_IMG_DEC	
+			   ,IFNULL((SELECT COUNT(*) 
+			       FROM TN_OPR_BOARD_COMMENT_INFO CM 
+			      WHERE 1=1 
+			        AND HIDDEN_YN='N' 
+			        AND CM.BOARD_SEQ =A.SEQ 
+			      GROUP BY BOARD_SEQ),0) COMMENTS_CNT
+	     FROM TN_OPR_BOARD_INFO A
+	    WHERE 1=1 
+	       ]]>
+	      AND SEQ =#{SEQ} 
+	      AND HIDDEN_YN ='N'
+
+	</select>
+	
+	<select id="writeViewData" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		 <![CDATA[
+		 /**board.writeViewData**/
+		SELECT SEQ
+			   ,BOARD_TYPE_CD
+			   ,MENU_CD
+			   ,TITLE
+			   ,REPLACE(CONTENT_DESC,'<br/>','\n')CONTENT_DESC
+			   ,FIXED_YN
+			   ,LIKE_YN
+			   ,CREATE_ID
+			   ,CREATE_DATETIME
+			   ,UPDATE_ID
+			   ,DATE_FORMAT(UPDATE_DATETIME,'%Y-%m-%d %H:%i:%s') UPDATE_DATETIME
+			   ,COMMENT_YN
+			   ,HIDDEN_YN
+			   ,CREATE_DATE
+			   ,(SELECT COUNT(*) FROM TN_OPR_BOARD_CNT_ITEMS B WHERE 1=1 AND B.MENU_CD =A.MENU_CD AND B.BOARD_SEQ=A.SEQ) CLICK_CNT
+			   ,USER_NM
+			   ,CRAWLER_IMG_DEC	
+			   ,IFNULL((SELECT COUNT(*) 
+			       FROM TN_OPR_BOARD_COMMENT_INFO CM 
+			      WHERE 1=1 
+			        AND HIDDEN_YN='N' 
+			        AND CM.BOARD_SEQ =A.SEQ 
+			      GROUP BY BOARD_SEQ),0) COMMENTS_CNT
+	     FROM TN_OPR_BOARD_INFO A
+	    WHERE 1=1 
+	       ]]>
+	      AND SEQ =#{SEQ} 
+	      AND HIDDEN_YN ='N'
+
+	</select>
+	
+	<select id="writeViewUserData" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		 <![CDATA[
+		 /**board.writeViewUserData**/
+		SELECT SEQ
+			   ,BOARD_TYPE_CD
+			   ,MENU_CD
+			   ,TITLE
+			   ,REPLACE(CONTENT_DESC,'<br/>','\n')CONTENT_DESC
+			   ,FIXED_YN
+			   ,LIKE_YN
+			   ,CREATE_ID
+			   ,CREATE_DATETIME
+			   ,UPDATE_ID
+			   ,DATE_FORMAT(UPDATE_DATETIME,'%Y-%m-%d %H:%i:%s') UPDATE_DATETIME
+			   ,COMMENT_YN
+			   ,HIDDEN_YN
+			   ,CREATE_DATE
+			   ,(SELECT COUNT(*) FROM TN_OPR_BOARD_CNT_ITEMS B WHERE 1=1 AND B.MENU_CD =A.MENU_CD AND B.BOARD_SEQ=A.SEQ) CLICK_CNT
+			   ,USER_NM
+			   ,IFNULL((SELECT COUNT(*) 
+			       FROM TN_OPR_BOARD_COMMENT_INFO CM 
+			      WHERE 1=1 
+			        AND HIDDEN_YN='N' 
+			        AND CM.BOARD_SEQ =A.SEQ 
+			      GROUP BY BOARD_SEQ),0) COMMENTS_CNT
+			   ,CRAWLER_IMG_DEC			  
+	     FROM TN_OPR_BOARD_INFO A
+	    WHERE 1=1 
+	       ]]>
+	      AND SEQ =#{SEQ} 
+	      and (CREATE_ID =#{USER_ID} or UPDATE_ID =#{USER_ID} or CREATE_ID =#{SESSION_ID} or UPDATE_ID =#{SESSION_ID}) 
+	      AND HIDDEN_YN ='N'
+
+	</select>
+	
+	<select id="commentsData" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		 <![CDATA[
+		 /**board.commentsData**/
+		SELECT BOARD_SEQ
+			   ,SEQ
+			   ,CONTENT_DESC
+			   ,LIKE_YN
+			   ,HIDDEN_YN
+			   ,CREATE_DATE
+			   ,CREATE_ID
+			   ,CREATE_DATETIME
+			   ,UPDATE_ID
+			   ,DATE_FORMAT(UPDATE_DATETIME,'%Y-%m-%d %H:%i:%s') UPDATE_DATETIME
+			   ,USER_NM
+	     FROM TN_OPR_BOARD_COMMENT_INFO A
+	    WHERE 1=1 
+	      ]]>
+	      AND BOARD_SEQ =#{BOARD_SEQ} 
+	      AND HIDDEN_YN ='N'
+	      ORDER BY CREATE_DATETIME ASC
+	      LIMIT ${START_NUM},${LIMIT_NUM}
+
+	</select>
+	
+	<insert id="insertBoard" parameterType="java.util.HashMap">
+	/*board.insertBoard*/
+	INSERT INTO TN_OPR_BOARD_INFO 
+	(
+		SEQ
+		,BOARD_TYPE_CD
+		,MENU_CD
+		,TITLE
+		,CONTENT_DESC
+		,FIXED_YN
+		,LIKE_YN
+		,USER_NM
+		,CREATE_ID
+		,CREATE_DATETIME
+		,UPDATE_ID
+		,UPDATE_DATETIME
+		,COMMENT_YN
+		,HIDDEN_YN
+		,CREATE_DATE
+	)
+	VALUES
+	(
+		#{SEQ}
+		,#{BOARD_TYPE_CD}
+		,#{MENU_CD}
+		,#{TITLE}
+		,#{CONTENT_DESC}
+		,(CASE WHEN #{FIXED_YN}='' OR #{FIXED_YN} IS NULL THEN 'N' ELSE 'Y' END) 
+		,#{LIKE_YN}
+		,#{USER_NM}
+		,#{CREATE_ID}
+		,DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+		,#{UPDATE_ID}
+		,DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+		,#{COMMENT_YN}
+		,(CASE WHEN #{HIDDEN_YN}='' OR #{HIDDEN_YN} IS NULL THEN 'N' ELSE 'Y' END)
+		,DATE_FORMAT(NOW(),'%Y%m%d')
+	)
+	
+    </insert>
+    
+    <update id="updateBoard" parameterType="java.util.HashMap">
+    /*board.updateBoard*/
+		UPDATE TN_OPR_BOARD_INFO
+	       SET TITLE =#{TITLE}
+			   ,CONTENT_DESC =#{CONTENT_DESC}
+			   ,LIKE_YN =LIKE_YN+1
+			   ,USER_NM = #{USER_NM}
+			   ,UPDATE_ID =#{UPDATE_ID}
+			   ,UPDATE_DATETIME=DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+			   ,COMMENT_YN = #{COMMENT_YN}
+	  WHERE 1=1 AND SEQ = #{SEQ}
+	</update>
+	
+	<update id="deleteBoard" parameterType="java.util.HashMap">
+	/*board.deleteBoard*/
+		DELETE FROM TN_OPR_BOARD_INFO WHERE 1=1 AND SEQ = #{SEQ}
+	</update>
+	
+	<update id="deleteComment" parameterType="java.util.HashMap">
+	/*board.deleteComment*/
+		DELETE FROM TN_OPR_BOARD_COMMENT_INFO WHERE 1=1 AND BOARD_SEQ = #{SEQ}
+	</update>
+	
+	<update id="deleteCommentSeq" parameterType="java.util.HashMap">
+	/*board.deleteComment*/
+		DELETE FROM TN_OPR_BOARD_COMMENT_INFO WHERE 1=1 AND SEQ = #{SEQ}
+	</update>
+	
+	<insert id="insertComment" parameterType="java.util.HashMap">
+	/*board.insertComment*/
+	INSERT INTO TN_OPR_BOARD_COMMENT_INFO 
+	(
+		SEQ
+		,BOARD_SEQ
+		,CONTENT_DESC
+		,LIKE_YN
+		,USER_NM
+		,CREATE_ID
+		,CREATE_DATETIME
+		,UPDATE_ID
+		,UPDATE_DATETIME
+		,HIDDEN_YN
+		,CREATE_DATE
+	)
+	VALUES
+	(
+		#{SEQ}
+		,#{BOARD_SEQ}
+		,#{COMMENT_DESC}
+		,#{LIKE_YN}
+		,#{COMMENT_USER_NM}
+		,#{CREATE_ID}
+		,DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+		,#{UPDATE_ID}
+		,DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+		,(case when #{HIDDEN_YN}='' or #{HIDDEN_YN} is null then 'N' else 'Y' end)
+		,DATE_FORMAT(NOW(),'%Y%m%d')
+	)
+	
+    </insert>
+    
+    <update id="updateComment" parameterType="java.util.HashMap">
+    /*board.updateComment*/
+		UPDATE TN_OPR_BOARD_COMMENT_INFO
+	       SET CONTENT_DESC =#{COMMENT_DESC}
+			   ,LIKE_YN =LIKE_YN+1
+			   ,USER_NM = #{COMMENT_USER_NM}
+			   ,UPDATE_ID =#{UPDATE_ID}
+			   ,UPDATE_DATETIME=DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+	  WHERE 1=1 AND SEQ = #{SEQ}
+	</update>
+    
+	<insert id="insert" parameterType="java.util.HashMap">
+	INSERT INTO TB_COMMON_MST(ITEM_CODE,
+                         ITEM_NAME,
+                         CREATE_USER_NAME,
+                         CREATE_USER_ID,
+                         CREATE_DATE)
+	VALUES ( CONCAT('PRODUCT_',IFNULL((SELECT MAX(COMMON_NUM) FROM TB_COMMON_MST AA WHERE 1=1 AND ITEM_CODE LIKE CONCAT('%','PRODUCT','%')),0)+1),
+        #{ITEM_NAME},
+        #{CREATE_USER_NAME},
+        #{CREATE_USER_ID},
+        DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+        )
+    </insert>
+	
+	<update id="update" parameterType="java.util.HashMap">
+	UPDATE TB_COMMON_MST
+	   SET 
+	       ITEM_NAME = #{ITEM_NAME},
+	       USE_YN = #{USE_YN},
+	       UPDATE_USER_NAME = #{UPDATE_USER_NAME},
+	       UPDATE_USER_ID = #{UPDATE_USER_ID},
+	       UPDATE_DATE = DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+	 WHERE 1 = 1 AND COMMON_NUM = #{COMMON_NUM}
+	
+	</update>
+	<update id="delete" parameterType="java.util.HashMap">
+	/**board.delete**/
+		update TB_COMMON_MST
+		   SET DELETE_YN = #{DELETE_YN},
+		   	   USE_YN = 'N',
+		   	   UPDATE_USER_NAME = #{UPDATE_USER_NAME},
+		       UPDATE_USER_ID = #{UPDATE_USER_ID},
+		       UPDATE_DATE = DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+	   where 1=1 AND COMMON_NUM = #{COMMON_NUM}
+	</update>
+	
+	<select id="selectContentsList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		/**board.selectContentsCnt**/
+		select * from TN_OPR_BOARD_CNT_ITEMS 
+		 where 1=1 
+		   AND MENU_CD=#{MENU_CD}
+		   AND BOARD_SEQ=#{SEQ}
+		   AND (USER_SESSION_ID=#{USER_SESSION_ID} or USER_ID=#{USER_ID})
+		   AND CREATE_DATE=DATE_FORMAT(NOW(),'%Y%m%d')
+	</select>
+	
+	<update id="hitMainData" parameterType="java.util.HashMap">
+	/**board.hitMainData**/
+		INSERT INTO TN_OPR_BOARD_CNT_ITEMS
+		(
+		SEQ
+		,MENU_CD
+		,BOARD_SEQ
+		,USER_ID
+		,USER_SESSION_ID
+		,CREATE_DATE
+		,CREATE_DATETIME
+		)
+		VALUES
+		(
+		#{RANDOM_SEQ}
+		,#{MENU_CD}
+		,#{SEQ}
+		,#{USER_ID}
+		,#{USER_SESSION_ID}
+		,DATE_FORMAT(NOW(),'%Y%m%d')
+		,DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+		)
+	</update>
+	
+	<select id="crawlerList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		/**board.crawlerList**/
+		 SELECT SEQ
+				,CREATE_DATE
+				,CONTENT_NM
+				,CONTENT_PRICE_DESC
+				,CONTENT_PLUS_MINUS_DESC
+				,CONTENT_URL_DESC
+				,GUBUN_CD
+				,MENU_CD
+				,CREATE_DATETIME
+				,CREATE_ID
+				,CONTENT_ORDER_DESC
+		  FROM TN_INF_STOCK_COIN_LAND_CRAWLER_INFO 
+		 WHERE 1=1 
+		   AND MENU_CD =#{MENU_CD}
+		 ORDER BY CAST(CONTENT_ORDER_DESC AS SIGNED INTEGER)  ASC
+		 LIMIT 0, 36
+	</select>
+</mapper> 

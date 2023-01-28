@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding= "UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="runStockCoinLandCrawler">
+
+	<update id="deleteContents" parameterType="java.util.HashMap">
+	<![CDATA[
+	 /**runStockCoinLandCrawler.deleteContents**/
+	DELETE FROM TN_INF_STOCK_COIN_LAND_CRAWLER_INFO
+	 WHERE 1=1 
+	   AND MENU_CD =#{MENU_CD}
+	]]>
+	</update>
+	
+	<update id="insertContents" parameterType="java.util.HashMap">
+	<![CDATA[
+	 /**runStockCoinLandCrawler.insertContents**/
+	INSERT INTO TN_INF_STOCK_COIN_LAND_CRAWLER_INFO
+	(
+		SEQ
+		,CREATE_DATE
+		,CONTENT_NM
+		,CONTENT_PRICE_DESC
+		,CONTENT_PLUS_MINUS_DESC
+		,CONTENT_URL_DESC
+		,GUBUN_CD
+		,MENU_CD
+		,CREATE_DATETIME
+		,CREATE_ID
+		,CONTENT_ORDER_DESC
+	)
+	VALUES
+	(
+		#{SEQ}
+		,DATE_FORMAT(NOW(),'%Y%m%d')
+		,#{CONTENT_NM}
+		,#{CONTENT_PRICE_DESC}
+		,#{CONTENT_PLUS_MINUS_DESC}
+		,#{CONTENT_URL_DESC}
+		,#{GUBUN_CD}
+		,#{MENU_CD}
+		,DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+		,#{CREATE_ID}
+		,#{CONTENT_ORDER_DESC}
+	)
+	]]>
+	</update>
+</mapper> 

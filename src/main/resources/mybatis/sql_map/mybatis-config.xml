@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding= "UTF-8" ?>
+<!DOCTYPE configuration
+PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-config.dtd" > 
+<configuration>
+    <mappers>
+        <mapper resource="/mybatis/sql_map/rDbConnect.xml" />
+        <mapper resource="/mybatis/sql_map/runCrawler.xml" />
+        <mapper resource="/mybatis/sql_map/runBoard.xml" />
+        <mapper resource="/mybatis/sql_map/runStockCoinLand.xml" />
+        <mapper resource="/mybatis/sql_map/file.xml" />
+        <mapper resource="/mybatis/sql_map/common.xml" />
+        <mapper resource="/mybatis/sql_map/board.xml" />
+        <mapper resource="/mybatis/sql_map/member.xml" />
+        <mapper resource="/mybatis/sql_map/mail.xml" />
+    </mappers>
+</configuration> 

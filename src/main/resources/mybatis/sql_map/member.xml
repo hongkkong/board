@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding= "UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="member">
+		
+    <update id="updateUserInfo" parameterType="java.util.HashMap">
+    /*member.updateUserInfo*/
+		UPDATE TN_COM_USER_INFO
+	       SET UPDATE_DATETIME  =DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+	       	   <if test="USER_NM != null and USER_NM != ''">
+			   ,USER_NM           =#{USER_NM}
+			   </if>
+			   <if test="USER_ADDR_IP != null and USER_ADDR_IP != ''">
+			   ,USER_ADDR_IP     =#{USER_ADDR_IP}
+			   </if>
+			   <if test="USER_SESSION != null and USER_SESSION != ''">
+			   ,USER_SESSION     =#{USER_SESSION}
+			   </if>
+			   <if test="USER_PASSWORD != null and USER_PASSWORD != ''">
+			   ,USER_PASSWORD    =#{USER_PASSWORD}
+			   </if>
+			   <if test="BLOCK_YN != null and BLOCK_YN != ''">
+			   	,BLOCK_YN         =#{BLOCK_YN}
+			   </if>
+			   <if test="USER_LEVEL_CD != null and USER_LEVEL_CD != ''">
+			   	,USER_LEVEL_CD    =#{USER_LEVEL_CD}
+			   </if>
+			   <if test="CONNECT_TYPE_CD != null and CONNECT_TYPE_CD != ''">
+			   ,CONNECT_TYPE_CD  =#{CONNECT_TYPE_CD}
+			   </if>
+	  WHERE 1=1 AND SEQ = #{SEQ}
+	</update>
+
+    <update id="insertUserInfo" parameterType="java.util.HashMap">
+    /*member.insertUserInfo*/
+		INSERT INTO TN_COM_USER_INFO
+		(
+			 SEQ
+			 ,USER_NM        
+			 ,USER_ID        
+			 ,USER_EMAIL     
+			 ,USER_ADDR_IP   
+			 ,USER_SESSION   
+			 ,USER_PASSWORD  
+			 ,CREATE_DATETIME
+			 ,UPDATE_DATETIME
+			 ,BLOCK_YN       
+			 ,USER_LEVEL_CD  
+			 ,CONNECT_TYPE_CD
+		)
+		VALUES
+		(
+			#{SEQ}
+	        ,#{USER_NM}
+		    ,#{USER_ID}
+		    ,#{USER_EMAIL}
+		    ,#{USER_ADDR_IP}
+		    ,#{USER_SESSION}
+		    ,#{USER_PASSWORD}
+		    ,DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+		    ,DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+		    ,#{BLOCK_YN}
+		    ,#{USER_LEVEL_CD}
+		    ,#{CONNECT_TYPE_CD}
+		)
+	</update>
+	
+	<select id="searchUserData" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	 /*member.searchUserData*/
+	SELECT  SEQ
+			,USER_NM
+			,USER_ID
+			,USER_EMAIL
+			,USER_ADDR_IP
+			,USER_SESSION
+			,USER_PASSWORD
+			,CREATE_DATETIME
+			,UPDATE_DATETIME
+			,BLOCK_YN
+			,USER_LEVEL_CD
+			,CONNECT_TYPE_CD 
+	  FROM TN_COM_USER_INFO
+	 WHERE 1=1 
+	   	<if test="USER_EMAIL != null and USER_EMAIL != ''">
+	      AND USER_EMAIL = #{USER_EMAIL}
+	    </if> 
+	    
+	    <if test="USER_ID != null and USER_ID != ''">
+	      AND USER_ID = #{USER_ID}
+	    </if> 
+
+	    <if test="USER_PASSWORD != null and USER_PASSWORD != ''">
+	      AND USER_PASSWORD = #{USER_PASSWORD}
+	    </if> 
+
+	</select>
+</mapper> 

@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding= "UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="file">
+	<update id="insert" parameterType="java.util.HashMap">
+    <![CDATA[
+        INSERT INTO TN_OPR_FILE_INFO
+        (
+			FILE_PATH
+			,ORG_FILE_NM
+			,FILE_NM
+			,FILE_TYPE_CD
+			,USER_ID
+			,CREATE_DATE
+			,CREATE_ID
+			,CREATE_DATETIME
+			,BOARD_SEQ
+			,SEQ
+        )
+        VALUES
+        (
+            #{FILE_PATH}
+            ,#{ORG_FILE_NM}
+            ,#{FILE_NM}
+            ,#{FILE_TYPE_CD}
+            ,#{USER_ID}
+            ,DATE_FORMAT(NOW(),'%Y%m%d')
+            ,#{USER_ID}
+            ,NOW()
+            ,#{BOARD_SEQ}
+            ,#{SEQ}
+        )
+    ]]>
+</update>
+
+</mapper> 

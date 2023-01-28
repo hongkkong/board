@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding= "UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="runBoard">
+	<select id="run" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		select 1 from dual
+	</select>
+
+	<select id="selectCrawlerInfo" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+		<![CDATA[
+	 /**runBoard.selectCrawlerInfo**/
+	 SELECT SEQ
+			,CREATE_DATE
+			,TITLE_DESC
+			,CONTENT_DESC
+			,CONTENT_USER_NM
+			,CONTENT_CREATE_DATETIME
+			,FROM_SITE_DESC
+			,GUBUN_CD
+			,MENU_CD
+			,CREATE_DATETIME
+			,CREATE_ID
+			,FROM_SITE_SEQ
+			,CONTENT_IMG_DESC 
+	 FROM TN_INF_CRAWLER_INFO A 
+	WHERE 1=1 
+	  AND NOT EXISTS (SELECT 'X' FROM TN_OPR_BOARD_INFO B WHERE 1=1 AND B.SEQ= A.SEQ)
+	  ]]>
+	</select>
+	
+	<update id="insertBoardInfo" parameterType="java.util.HashMap">
+		<![CDATA[
+	 /**runBoard.insertBoardInfo**/
+	INSERT INTO TN_OPR_BOARD_INFO 
+	(
+		SEQ
+		,BOARD_TYPE_CD
+		,MENU_CD
+		,TITLE
+		,CONTENT_DESC
+		,FIXED_YN
+		,LIKE_YN
+		,USER_NM
+		,CREATE_ID
+		,CREATE_DATETIME
+		,UPDATE_ID
+		,UPDATE_DATETIME
+		,COMMENT_YN
+		,HIDDEN_YN
+		,CREATE_DATE
+		,CRAWLER_IMG_DEC
+	)
+	VALUES
+	(
+		#{SEQ}
+		,#{BOARD_TYPE_CD}
+		,#{MENU_CD}
+		,substring(#{TITLE},1,150)
+		,#{CONTENT_DESC}
+		,(CASE WHEN #{FIXED_YN}='' OR #{FIXED_YN} IS NULL THEN 'N' ELSE 'Y' END) 
+		,#{LIKE_YN}
+		,#{USER_NM}
+		,#{CREATE_ID}
+		,DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+		,#{UPDATE_ID}
+		,DATE_FORMAT(NOW(),'%Y-%m-%d %H:%i:%s')
+		,#{COMMENT_YN}
+		,(CASE WHEN #{HIDDEN_YN}='' OR #{HIDDEN_YN} IS NULL THEN 'N' ELSE 'Y' END)
+		,DATE_FORMAT(NOW(),'%Y%m%d')
+		,#{CRAWLER_IMG_DEC}
+	)
+	 ]]>
+	</update>
+</mapper> 

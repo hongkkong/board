@@ -1,0 +1,81 @@
+<?xml version="1.0" encoding= "UTF-8" ?>
+<!DOCTYPE mapper
+PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+"http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="common">
+	<select id="menuList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	/**common.menuList**/
+	   SELECT SEQ,PART, MENU_CD ,MENU_NM_KR ,MENU_NM_EN,ICON_CSS_URL ,LINK_URL,RN   
+	     FROM
+	   (
+		   SELECT A.SEQ,CASE WHEN (SELECT COUNT(*) FROM TN_COM_MENU_ITEMS B WHERE 1=1 AND A.MENU_CD =B.TOP_MENU_CD AND B.USE_YN ='Y' ) = 0 THEN 'MAIN' ELSE 'MAIN_SUB'END PART, MENU_CD ,MENU_NM_KR ,MENU_NM_EN,ICON_CSS_URL ,LINK_URL 
+		          , (SELECT COUNT(*) FROM TN_COM_MENU_ITEMS B WHERE 1=1 AND A.MENU_CD =B.TOP_MENU_CD AND B.USE_YN ='Y') RN
+		     FROM TN_COM_MENU_INFO A WHERE 1=1 AND USE_YN ='Y'
+		   UNION ALL
+		   SELECT B.SEQ,'SUB' PART, B.MENU_CD ,B.MENU_NM_EN ,B.MENU_NM_KR ,B.ICON_CSS_URL ,B.LINK_URL ,(SELECT COUNT(*) FROM TN_COM_MENU_ITEMS BB WHERE 1=1 AND A.MENU_CD =BB.TOP_MENU_CD AND B.USE_YN ='Y') RN
+		     FROM TN_COM_MENU_INFO A ,TN_COM_MENU_ITEMS B WHERE 1=1 AND B.USE_YN ='Y' AND A.MENU_CD =B.TOP_MENU_CD
+	   ) A
+	   ORDER BY A.PART,A.SEQ 
+	</select>
+	
+	<select id="menuSelectList" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	/**common.menuSelectList**/
+	   SELECT SEQ,PART, MENU_CD ,MENU_NM_KR ,MENU_NM_EN,ICON_CSS_URL ,LINK_URL  
+	     FROM
+	   (
+		   SELECT A.SEQ,CASE WHEN (SELECT COUNT(*) FROM TN_COM_MENU_ITEMS B WHERE 1=1 AND A.MENU_CD =B.TOP_MENU_CD AND B.USE_YN ='Y') = 0 THEN 'MAIN' ELSE 'MAIN_SUB'END PART
+		          , MENU_CD ,MENU_NM_KR ,MENU_NM_EN,ICON_CSS_URL ,LINK_URL 
+		     FROM TN_COM_MENU_INFO A WHERE 1=1 AND USE_YN ='Y'
+		   UNION ALL
+		   SELECT B.SEQ,'SUB' PART, B.MENU_CD ,B.MENU_NM_EN ,B.MENU_NM_KR ,B.ICON_CSS_URL ,B.LINK_URL
+		     FROM TN_COM_MENU_INFO A ,TN_COM_MENU_ITEMS B WHERE 1=1 AND B.USE_YN ='Y' AND A.MENU_CD =B.TOP_MENU_CD
+	   ) A
+	   WHERE 1=1 
+	   <if test="MENU_CD != null and MENU_CD != ''">
+	      AND MENU_CD =#{MENU_CD} 
+	    </if>
+	</select>
+	
+	<insert id="insertLog" parameterType="java.util.HashMap">
+	/*common.insertLog*/
+	 INSERT INTO TN_COM_USE_LOG_INFO
+     (
+     	USER_ID
+		,USER_ADDR_IP
+		,USER_SESSION
+		,CONNECT_DATE
+		,MENU_CD
+		,USER_ACT_CD
+		,CONNECT_TYPE_CD
+		,CREATE_DATETIME
+     )
+     VALUES
+     (
+     	(CASE WHEN #{USER_ID} ='' or #{USER_ID} is null THEN 'ANONYMOUS' ELSE #{USER_ID} END)
+		,#{USER_ADDR_IP}
+		,#{USER_SESSION}
+		,DATE_FORMAT(NOW(),'%Y%m%d')
+		,(CASE WHEN #{MENU_CD} ='' or #{MENU_CD} is null THEN 'MAIN_PAGE' ELSE #{MENU_CD} END)
+		,#{USER_ACT_CD}
+		,#{CONNECT_TYPE_CD}
+		,NOW()
+     )
+	</insert>
+	
+
+	<select id="list" parameterType="java.util.HashMap" resultType="java.util.HashMap">
+	
+	</select>
+
+	<insert id="insert" parameterType="java.util.HashMap">
+	
+    </insert>
+	
+	<update id="update" parameterType="java.util.HashMap">
+	
+	</update>
+	<update id="delete" parameterType="java.util.HashMap">
+	
+	</update>
+	
+</mapper> 
