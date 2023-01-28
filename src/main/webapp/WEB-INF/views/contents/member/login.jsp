@@ -24,7 +24,7 @@
     <link href="/resources/ui/lightbox/css/lightbox.min.css" media="screen" rel="stylesheet" type="text/css" >
 
     <!-- Custom styles -->
-    <link href="/resources/ui/css/styles.min.css" media="screen" rel="stylesheet" type="text/css" >
+    <link href="/resources/ui/css/styles.css" media="screen" rel="stylesheet" type="text/css" >
 
     <!-- Modernizr -->
     <script type="text/javascript" src="/resources/ui/js/modernizr.custom.min.js"></script>

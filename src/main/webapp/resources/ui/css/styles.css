@@ -17,7 +17,7 @@ html, body {
 body {
     overflow-x: hidden;
     /**background: white repeat top center fixed;**/
-    background: url("/resources/ui/img/background.jpg") repeat top center fixed;
+    background:#141414;
 }
 
 /*preloader*/
