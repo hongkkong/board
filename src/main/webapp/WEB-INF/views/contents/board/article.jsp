@@ -38,7 +38,7 @@
 	            <div class="bar bar-2 bg-orange"></div>
 	            <div class="bar bar-3 bg-yellow"></div> 
 	            <div class="bar bar-4 bg-green"></div>
-	            <div class="bar bar-5 bg-green-2"></div>
+	            <div class="bar bar-5 bg-green-2"></div> 
 	            <div class="text">Loading</div> 
 	        </div>
 	    </div>
