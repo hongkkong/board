@@ -41,7 +41,7 @@ public class RunStockCoinLandCrawler
 		searchMap.put("MENU_CD", "COIN");
 		runStockCoinLandCrawlerDao.deleteContents(searchMap);
 
-		String baseUrl = "https://www.bithumb.com";
+		String baseUrl = "https://www.bithumb.com/react/";
 
 		// 1.document를 가져온다.
 		Document doc = Jsoup.connect(baseUrl).get();
