@@ -25,12 +25,12 @@ public class RunStockCoinLandCrawler
 	@Inject
 	private BoardUtil boardUtil;
 
-	@Scheduled(cron = "0 10 0/1 * * *")
+	@Scheduled(cron = "0 0/2 * * * *")
 	public void main() throws IOException
 	{
 		this.coinMain();
-		this.stockMain();
-		this.landMain();
+//		this.stockMain();
+//		this.landMain();
 	}
 	
 	public void coinMain() throws IOException
@@ -57,34 +57,37 @@ public class RunStockCoinLandCrawler
 //		 elCoinName.getElementsByAttribute("href").attr("href"));
 //		 }
 		
-		Elements eCoinName = doc.select(".sort_coin_box");
-		Elements ePrice = doc.select(".sort_real_box>strong");
-		Elements ePlus = doc.select(".sort_change");
+		Elements eCoinName = doc.select(".table-asset>p>a>strong");
+//		Elements ePrice = doc.select(".sort_real_box>strong");
+//		Elements ePlus = doc.select(".sort_change");
 
 		for (int k = 0; k < eCoinName.size(); k++)
 		{
 			Element elCoinName = eCoinName.get(k);
-			Element elPrice = ePrice.get(k);
-			Element elPlus = ePlus.get(k);
+//			Element elPrice = ePrice.get(k);
+//			Element elPlus = ePlus.get(k);
 			String[] sCoinName = elCoinName.text().split("/");
 			
-			if(!"0 %".equals((elPlus.text())))
-			{
-				Map<String, Object> paramMap =new HashMap<String, Object>();
-
-				paramMap.put("CONTENT_NM", sCoinName[0]);
-				paramMap.put("CONTENT_PRICE_DESC", elPrice.text());
-				paramMap.put("CONTENT_PLUS_MINUS_DESC", elPlus.text());
-				paramMap.put("CONTENT_URL_DESC", baseUrl + "" + elCoinName.getElementsByAttribute("href").attr("href"));
-				String sSeq =boardUtil.randomStr(30);
-				paramMap.put("SEQ", sSeq);
-				paramMap.put("MENU_CD", "COIN");
-				paramMap.put("GUBUN_CD", "CRAWLING");
-				paramMap.put("CREATE_ID", "SYSTEM");
-				
-				paramMap.put("CONTENT_ORDER_DESC", k+1);
-				runStockCoinLandCrawlerDao.insertContents(paramMap);
-			}
+			System.out.println("elCoinName::>"+elCoinName);
+			
+			
+//			if(!"0 %".equals((elPlus.text())))
+//			{
+//				Map<String, Object> paramMap =new HashMap<String, Object>();
+//
+//				paramMap.put("CONTENT_NM", sCoinName[0]);
+//				paramMap.put("CONTENT_PRICE_DESC", elPrice.text());
+//				paramMap.put("CONTENT_PLUS_MINUS_DESC", elPlus.text());
+//				paramMap.put("CONTENT_URL_DESC", baseUrl + "" + elCoinName.getElementsByAttribute("href").attr("href"));
+//				String sSeq =boardUtil.randomStr(30);
+//				paramMap.put("SEQ", sSeq);
+//				paramMap.put("MENU_CD", "COIN");
+//				paramMap.put("GUBUN_CD", "CRAWLING");
+//				paramMap.put("CREATE_ID", "SYSTEM");
+//				
+//				paramMap.put("CONTENT_ORDER_DESC", k+1);
+//				runStockCoinLandCrawlerDao.insertContents(paramMap);
+//			}
 		}
 
 		System.out.println("빗썸 클롤러 end>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
