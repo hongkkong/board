@@ -17,7 +17,7 @@ public class RunBoardInsert
 	@Autowired
 	private RunBoardInsertDao runBoardInsertDao;
 
-	@Scheduled(cron = "0 0/50 * * * *")
+	@Scheduled(cron = "0 0/30 * * * *")
 	public void antokKoreaStockMain() throws IOException
 	{
 		System.out.println("국내 증시 크롤러 to board start>>>>>>>>>>>>>>>>>>>>>>>>>>>>");
