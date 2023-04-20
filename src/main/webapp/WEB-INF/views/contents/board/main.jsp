@@ -234,53 +234,77 @@
 	
 	this.lfn_coinInfo = function()
 	{
-		var params ={};
-		var lo_coreJson = gfn_service(params,"/board/coinInfoData.do");
-		var lv_headHtml = "";
-		var lv_listHtml = "";
-		$("#CRAWLER_ZONE").html("");
-		$("#CRAWLER_ZONE_DTL_LIST").html("");
+		var lo_coreJson ="";
+		const request = new XMLHttpRequest();
+		const url = "https://api.upbit.com/v1/market/all";
 		
-		if (lo_coreJson != null && lo_coreJson.length > 0)
-		{
-			lv_headHtml +="<div class='row'>          ";
-			lv_headHtml +="    <div class='col-xs-5'> ";
-			lv_headHtml +="    코인명                   ";
-			lv_headHtml +="    </div>                 ";
-			lv_headHtml +="    <div class='col-xs-4'> ";
-			lv_headHtml +="    시세                    ";
-			lv_headHtml +="    </div>                 ";
-			lv_headHtml +="    <div class='col-xs-3'> ";
-			lv_headHtml +="    증감                    ";
-			lv_headHtml +="    </div>                 ";
-			lv_headHtml +="    <div class='col-xs-12'>";
-			lv_headHtml +="        <hr>               ";
-			lv_headHtml +="    </div>                 ";
-			lv_headHtml +="</div>                     ";
+		request.open("GET", url, false);
+		request.send();
+		var lo_coreJson = JSON.parse(request.responseText);
+		console.log(lo_coreJson);
+		  
+		  var params ={};
+			var lv_headHtml = "";
+			var lv_listHtml = "";
+			$("#CRAWLER_ZONE").html("");
+			$("#CRAWLER_ZONE_DTL_LIST").html("");
 			
-			$.each(lo_coreJson, function(k, n)
+			if (lo_coreJson != null && lo_coreJson.length > 0)
 			{
-				var data = lo_coreJson[k];
+				lv_headHtml +="<div class='row'>          ";
+				lv_headHtml +="    <div class='col-xs-5'> ";
+				lv_headHtml +="    코인명                   ";
+				lv_headHtml +="    </div>                 ";
+				lv_headHtml +="    <div class='col-xs-4'> ";
+				lv_headHtml +="    시세                    ";
+				lv_headHtml +="    </div>                 ";
+				lv_headHtml +="    <div class='col-xs-3'> ";
+				lv_headHtml +="    증감                    ";
+				lv_headHtml +="    </div>                 ";
+				lv_headHtml +="    <div class='col-xs-12'>";
+				lv_headHtml +="        <hr>               ";
+				lv_headHtml +="    </div>                 ";
+				lv_headHtml +="</div>                     ";
 				
-				lv_listHtml +="<div class='row'>          ";
-				lv_listHtml +="    <div class='col-xs-5'> ";
-				lv_listHtml +="    <a href='"+data.COIN_HREF+"' target='_blank'>"+data.COIN_NM+"</a>";
-				lv_listHtml +="    </div>                 ";
-				lv_listHtml +="    <div class='col-xs-4'> ";
-				lv_listHtml +="    <a href='"+data.COIN_HREF+"' target='_blank'>"+data.COIN_PRICE+"</a>";
-				lv_listHtml +="    </div>                 ";
-				lv_listHtml +="    <div class='col-xs-3'> ";
-				lv_listHtml +="    <a href='"+data.COIN_HREF+"' target='_blank'>"+data.COIN_PLUS+"</a>";
-				lv_listHtml +="    </div>                 ";
-				lv_listHtml +="    <div class='col-xs-12'>";
-				lv_listHtml +="        <hr>               ";
-				lv_listHtml +="    </div>                 ";
-				lv_listHtml +="</div>                     ";
-			});//JSON ARRAY
-				
-			$("#CRAWLER_ZONE").html(lv_headHtml);
-			$("#CRAWLER_ZONE_DTL_LIST").html(lv_listHtml);
-		}
+				$.each(lo_coreJson, function(k, n)
+				{
+					var data = lo_coreJson[k];
+					
+					lfn_coinPrice(data.market); 
+					
+					lv_listHtml +="<div class='row'>          ";
+					lv_listHtml +="    <div class='col-xs-5'> ";
+					lv_listHtml +="    <a href='"+data.COIN_HREF+"' target='_blank'>"+data.korean_name+"</a>";
+					lv_listHtml +="    </div>                 ";
+					lv_listHtml +="    <div class='col-xs-4'> ";
+					lv_listHtml +="    <a href='"+data.COIN_HREF+"' target='_blank'>"+data.COIN_PRICE+"</a>";
+					lv_listHtml +="    </div>                 ";
+					lv_listHtml +="    <div class='col-xs-3'> ";
+					lv_listHtml +="    <a href='"+data.COIN_HREF+"' target='_blank'>"+data.COIN_PLUS+"</a>";
+					lv_listHtml +="    </div>                 ";
+					lv_listHtml +="    <div class='col-xs-12'>";
+					lv_listHtml +="        <hr>               ";
+					lv_listHtml +="    </div>                 ";
+					lv_listHtml +="</div>                     ";
+				});//JSON ARRAY
+					
+				$("#CRAWLER_ZONE").html(lv_headHtml);
+				$("#CRAWLER_ZONE_DTL_LIST").html(lv_listHtml);
+			}
+		  
+	};
+	
+	this.lfn_coinPrice = function(lv_market)
+	{		
+		var lo_coreJson ="";
+		const request = new XMLHttpRequest();
+		const url = "https://api.upbit.com/v1/ticker?markets="+lv_market;
+		
+		request.open("GET", url, false);
+		request.send();
+		var lo_coreJson = JSON.parse(request.responseText);
+		console.log(lo_coreJson);
+		
 	};
 	
 	this.lfn_landInfo = function()

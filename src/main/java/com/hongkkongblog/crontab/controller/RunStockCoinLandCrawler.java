@@ -28,7 +28,7 @@ public class RunStockCoinLandCrawler
 	@Scheduled(cron = "0 10 0/1 * * *")
 	public void main() throws IOException
 	{
-		this.coinMain();
+//		this.coinMain();
 		this.stockMain();
 		this.landMain();
 	}
